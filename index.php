@@ -29,9 +29,9 @@ function getTimeFromDegrees(float $hourHandDegrees, bool $is24hFormat = false): 
     $result = array();
     $hourHandDegrees = fmod($hourHandDegrees, $is24hFormat ? 720 : 360);
     $timeInSeconds = $hourHandDegrees / DEG_IN_ONE_SECOND;
-    $result['hours'] = intval(floor($timeInSeconds / 3600));
-    $result['minutes'] = intval(floor($timeInSeconds / 60 % 60));
-    $result['seconds'] = intval(floor($timeInSeconds % 60));
+    $result['hours'] = intval($timeInSeconds / 3600);
+    $result['minutes'] = $timeInSeconds / 60 % 60;
+    $result['seconds'] = $timeInSeconds % 60;
 
     return $result;
 }
