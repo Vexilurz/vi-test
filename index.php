@@ -23,30 +23,25 @@ echo '<br><br>';
 
 // *** Solution #2 ***
 
-const DEG_IN_CLOCK = 360.0; // 720.0 for 24-h format
-const DEG_IN_ONE_HOUR = DEG_IN_CLOCK / 12.0;
-const MINUTES_IN_HOUR = 60.0;
+const DEG_IN_ONE_SECOND = 360 / (12 * 60 * 60);
 
-function getTimeFromDegrees(float $hourHandDegrees): array {
+function getTimeFromDegrees(float $hourHandDegrees, bool $is24hFormat = false): array {
     $result = array();
-    $hourHandDegrees = fmod($hourHandDegrees, DEG_IN_CLOCK);
-
-    $hours = $hourHandDegrees / DEG_IN_ONE_HOUR;
-    $result['hours'] = intval(floor($hours));
-    $minutes = ($hours - floor($hours)) * MINUTES_IN_HOUR;
-    $result['minutes'] = intval(floor($minutes));
-    $seconds = ($minutes - floor($minutes)) * MINUTES_IN_HOUR;
-    $result['seconds'] = intval(floor($seconds));
+    $hourHandDegrees = fmod($hourHandDegrees, $is24hFormat ? 720 : 360);
+    $timeInSeconds = $hourHandDegrees / DEG_IN_ONE_SECOND;
+    $result['hours'] = intval(floor($timeInSeconds / 3600));
+    $result['minutes'] = intval(floor($timeInSeconds / 60 % 60));
+    $result['seconds'] = intval(floor($timeInSeconds % 60));
 
     return $result;
 }
 
-$degrees = 33.42345;
-$testResult2 = getTimeFromDegrees($degrees);
+$degrees = 33.42345 + 360;
+$testResult2 = getTimeFromDegrees($degrees, true);
 echo "Result of test2 for {$degrees}°: " . implode(':', $testResult2);
 echo '<br>';
 var_dump($testResult2);
 echo '<br>';
-echo 'Check test2 result (float numbers error exist): ';
-echo sprintf('%.4f°', ($testResult2['seconds'] / pow(MINUTES_IN_HOUR, 2) +
-        $testResult2['minutes'] / MINUTES_IN_HOUR + $testResult2['hours']) * DEG_IN_ONE_HOUR);
+echo 'Check test2 result: ';
+echo sprintf('%.4f°', ($testResult2['hours'] * 3600 + $testResult2['minutes'] * 60 +
+        $testResult2['seconds']) * DEG_IN_ONE_SECOND);
